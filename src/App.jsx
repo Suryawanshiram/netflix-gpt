@@ -1,5 +1,6 @@
 
 import './App.css'
+import Body from './components/Body'
 
 function App() {
   
@@ -7,7 +8,7 @@ function App() {
   return (
     <>
       <div className=''>
-            <div className='text-3xl font-bold text-green-400 '>Her Choose</div>
+            <Body/>
       </div>
      
     </>
