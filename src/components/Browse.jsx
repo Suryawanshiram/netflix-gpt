@@ -1,8 +1,10 @@
-
+import Header from "./Header"
 
 const Browse = () => {
   return (
-    <div>Browse</div>
+    <div className="flex w-full h-screen bg-white">
+      <Header/>
+    </div>
   )
 }
 

@@ -1,23 +1,48 @@
-
+import { signOut } from "firebase/auth";
+import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const user = useSelector(store => store.user);
+  
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
+        navigate("/error");
+      });
+  };
+
   return (
-    <section className="backgroundImg(">
-    <div className="w-full flex justify-center items-between gap-5">
-    <div className="absolute px-8 py-2 bg-gradient-to-b from-black w-full">
-      <img className="w-44 object-contain text-sm" src="https://cdn.cookielaw.org/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png" alt="logo"/>
-    </div>
-
-      <form className="absolute ml-56 mt-40 mx-auto items-center justify-center gap-5 p-20 bg-black right-0 left-0 flex flex-col w-fit">
-        <h1 className="text-white font-bold text-3xl items-center justify-center text-justify mx-auto">Sign In</h1>
-           <input type="text" placeholder="Email address" className="px-4 py-2 m-3 rounded-md" />
-           <input type="text" placeholder="Password" className="px-4 py-2 rounded-md m-3" />
-          <button className="mx-auto w-full px-4 items-center justify-center text-center py-2 rounded-md  bg-red-500 gap-5">Sign In</button>
-         
-        </form>
+    <header className="w-full bg-gray-300 text-white py-4">
+      <div className="container mx-auto flex justify-between items-center">
+        <img
+          className="h-10"
+          src="https://cdn.cookielaw.org/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png"
+          alt="Netflix Logo"
+        />
+        
+      { user && (<div className="flex items-center">
+          <img
+            className="h-8 mr-4"
+            src={user?.photoURL}
+            alt="User Icon"
+          />
+          <button
+            onClick={handleSignOut}
+            className="bg-red-400 p-2 font-semibold hover:bg-red-300 cursor-pointer rounded-md"
+          >
+            Sign Out
+          </button>
+        </div>
+        )}
       </div>
-      </section>
-  )
-}
+    </header>
+  );
+};
 
-export default Header
+export default Header;
