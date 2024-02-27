@@ -1,93 +1,102 @@
 import { useRef, useState } from "react";
-// import Header from "./Header";
+import Header from "./Header";
 import { checkValidData } from ".././utils/validate";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile  } from "firebase/auth";
-import {auth} from "../utils/firebase"
-import { useNavigate } from "react-router-dom";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
+import { useNavigate } from "react-router-dom";
+import { USER_AVATAR } from "../utils/constant";
+import { BG_URL } from "../utils/constant";
 
 const Login = () => {
   const [isSignForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
-  const navigate = useNavigate()
-
-  const dispatch = useDispatch( )
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const email = useRef(null);
   const password = useRef(null);
   const name = useRef(null);
 
-  const toggleSignInForm = () => {
-    setIsSignInForm(!isSignForm);
-  };
-
   const handleButtonClick = () => {
     // validate form data
     const message = checkValidData(email.current.value, password.current.value);
     setErrorMessage(message);
-  
     if (message) return;
 
     if (!isSignForm) {
       // Sign up Logic
-      createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
-  .then((userCredential) => {
-    // Signed up 
-    const user = userCredential.user;
-    // console.log(user);
-    updateProfile(user, {
-      displayName: name.current.value,
-      photoURL: "https://example.com/jane-q-user/profile.jpg",
-
-    }).then(() => {  
-      const { uid, email, displayName, photoURL } = auth.currentUser;
-      dispatch(
-        addUser({
-          uid: uid,
-          email: email,
-          displayName: displayName,
-          photoURL: photoURL,
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          updateProfile(user, {
+            displayName: name.current.value,
+            photoURL: USER_AVATAR,
+          })
+            .then(() => {
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
+                })
+              );
+              navigate("/browse");
+            })
+            .catch((error) => {
+              setErrorMessage(error.message);
+            });
         })
-      );
-      navigate("/browse")
-    }).catch((error) => {
-      setErrorMessage(error.message)
-    })
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    setErrorMessage(errorCode +"-" + errorMessage)
-  });  
-      
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
     } else {
       // Signed In Logic
-      signInWithEmailAndPassword(auth, email.current.value, password.current.value)
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    console.log(user);
-    navigate("/browse")
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    setErrorMessage(errorCode + "-" + errorMessage )
-  });
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
     }
+  };
+
+  const toggleSignInForm = () => {
+    setIsSignInForm(!isSignForm);
   };
 
   return (
     <div>
-      {/* <Header /> */}
+      <Header />
 
       <div className="w-full flex justify-center items-between gap-5">
         <h1>Sign In</h1>
         <div className="absolute px-8 py-2 bg-gradient-to-b from-black w-full">
           <img
             className="w-44 object-contain text-sm"
-            src="https://cdn.cookielaw.org/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png"
+            src={BG_URL}
             alt="logo"
           />
         </div>
@@ -123,7 +132,7 @@ const Login = () => {
           <p className="text-red-500 font-bold text-lg p-2">{errorMessage}</p>
           <button
             onClick={handleButtonClick}
-            className="mx-auto w-3/4 px-4 items-center justify-center text-center py-2 rounded-md  bg-red-500 gap-5"
+            className="mx-auto w-3/12 px-4 items-center justify-center text-center py-2 rounded-md  bg-red-500 gap-5"
           >
             {isSignForm ? "Sign In" : "Sign Up"}
           </button>
