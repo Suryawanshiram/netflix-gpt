@@ -50,7 +50,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="w-full bg-gray-300 text-white py-4">
+    <header className="w-full bg-black pt-5 text-white py-4">
       <div className="container mx-auto flex justify-between items-center">
         <img
           className="h-10"

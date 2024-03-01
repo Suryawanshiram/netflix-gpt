@@ -10,13 +10,13 @@ const MainContainer = () => {
  
   if (!movies) return;  // Its called Early return
   const mainMovie = movies[0];
-  console.log(mainMovie);
+  // console.log(mainMovie);
   
-  const {original_title,overview} = mainMovie
+  const {original_title,overview, id} = mainMovie
   return (
     <div className="flex w-full flex-col">
       <VideoTitle title={original_title} overview={overview} />
-      <VideoBackground/>
+      <VideoBackground movieId={id} />
     </div>
   )
 }
